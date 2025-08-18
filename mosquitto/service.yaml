@@ -6,6 +6,8 @@ metadata:
   labels:
     app: mosquitto
 spec:
+  type: ExternalName
+  externalName: mqtt.svc.cluster.local
   selector:
     app: mosquitto
   ports:
