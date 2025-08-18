@@ -1,0 +1,29 @@
+# ConfigMap containing the Mosquitto configuration file
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mosquitto-config
+  namespace: mosquitto-broker
+data:
+  mosquitto.conf: |
+    # =================================================================
+    # Basic Mosquitto Configuration
+    # =================================================================
+
+    # Allow connections with no username or password.
+    # Set to false to disable and enforce authentication.
+    allow_anonymous true
+
+    # Port to listen on for MQTT connections
+    listener 1883
+
+    # Port for MQTT over WebSockets
+    listener 9001
+    protocol websockets
+
+    # Logging settings
+    log_dest stdout
+    log_type error
+    log_type warning
+    log_type notice
+    log_type information

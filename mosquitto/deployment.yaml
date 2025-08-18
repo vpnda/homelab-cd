@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mosquitto-mqtt-broker
+  namespace: mosquitto-broker
+  labels:
+    app: mosquitto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mosquitto
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      containers:
+      - name: mosquitto
+        image: eclipse-mosquitto:2.0
+        ports:
+        # Standard MQTT port
+        - containerPort: 1883
+          name: mqtt
+        # MQTT over WebSocket port
+        - containerPort: 9001
+          name: websocket
+        # Mount the Mosquitto configuration from the ConfigMap
+        volumeMounts:
+        - name: mosquitto-config-volume
+          mountPath: /mosquitto/config/mosquitto.conf
+          subPath: mosquitto.conf
+      volumes:
+      # Define the volume from the ConfigMap
+      - name: mosquitto-config-volume
+        configMap:
+          name: mosquitto-config
