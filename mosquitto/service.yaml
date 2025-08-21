@@ -1,6 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    external-dns.alpha.kubernetes.io/internal-hostname: mqtt.vpineda.me
   name: mosquitto-mqtt-service
   namespace: mosquitto-broker
   labels:
