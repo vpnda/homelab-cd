@@ -43,6 +43,8 @@ spec:
       - name: mosquitto-data
         persistentVolumeClaim:
           claimName: mosquitto-longhorn-pvc
+      securityContext:
+        fsGroup: 1883
 
 ---
 apiVersion: v1
