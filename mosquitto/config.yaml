@@ -21,6 +21,11 @@ data:
     listener 9001
     protocol websockets
 
+    # Persist state
+    persistence true
+    persistence_location /var/lib/mosquitto/
+    autosave_interval 60
+
     # Logging settings
     log_dest stdout
     log_type error
