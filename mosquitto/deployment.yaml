@@ -31,8 +31,29 @@ spec:
         - name: mosquitto-config-volume
           mountPath: /mosquitto/config/mosquitto.conf
           subPath: mosquitto.conf
+        # Mount persistent volume for Mosquitto data
+        - name: mosquitto-data
+          mountPath: /var/lib/mosquitto
       volumes:
       # Define the volume from the ConfigMap
       - name: mosquitto-config-volume
         configMap:
           name: mosquitto-config
+      # Persistent volume for Mosquitto data
+      - name: mosquitto-data
+        persistentVolumeClaim:
+          claimName: mosquitto-longhorn-pvc
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mosquitto-longhorn-pvc
+  namespace: mosquitto-broker
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  storageClassName: longhorn-rc2
