@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: esphome-dashboard
+  labels:
+    app: esphome
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: esphome
+  template:
+    metadata:
+      labels:
+        app: esphome
+    spec:
+      containers:
+      - name: esphome
+        image: esphome/esphome:latest # Use the official ESPHome Docker image
+        ports:
+        - containerPort: 6052 # Default ESPHome dashboard port
+        volumeMounts:
+        - name: esphome-config
+          mountPath: /config
+      volumes:
+      - name: esphome-config
+        persistentVolumeClaim:
+          claimName: esphome-longhorn-pvc # Refer to a PersistentVolumeClaim for storing configurations
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: esphome-longhorn-pvc
+  namespace: esphome
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  storageClassName: longhorn-rc2

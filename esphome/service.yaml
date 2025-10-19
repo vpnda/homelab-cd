@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard
+  namespace: default
+  labels:
+    app: esphome
+spec:
+  selector:
+    app: esphome
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 6052
+  type: ClusterIP
