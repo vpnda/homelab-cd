@@ -1,11 +1,12 @@
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: esphome-dashboard
   labels:
     app: esphome
 spec:
+  serviceName: "esphome"
   replicas: 1
   selector:
     matchLabels:
@@ -38,20 +39,13 @@ spec:
               key: password
         securityContext:
           privileged: true
-      volumes:
-      - name: esphome-config
-        persistentVolumeClaim:
-          claimName: esphome-longhorn-pvc # Refer to a PersistentVolumeClaim for storing configurations
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: esphome-longhorn-pvc
-  namespace: esphome
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 200Mi
-  storageClassName: longhorn-rc2
+  volumeClaimTemplates:
+  - metadata:
+      name: esphome-config
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 200Mi
+      storageClassName: longhorn-rc2
