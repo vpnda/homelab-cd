@@ -1,0 +1,47 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: home-assistant
+  namespace: home-assistant
+  labels:
+    app.kubernetes.io/instance: home-assistant
+    app.kubernetes.io/name: home-assistant
+spec:
+  entryPoints:
+    - websecure
+  
+  # Configuration for automatic TLS via the certResolver, referencing the hosts
+  # from the rules below. We use the 'default' resolver as specified in the original annotations.
+  tls:
+    certResolver: default
+    domains:
+      - main: "ha.vpineda.me"
+      - sans:
+          - "direct.ha.vpineda.me"
+
+  routes:
+    # Main Home Assistant Route (ha.vpineda.me)
+    - match: Host(`ha.vpineda.me`)
+      kind: Rule
+      services:
+        - name: home-assistant
+          port: 8080
+
+    # Direct Access/API Routes (direct.ha.vpineda.me)
+    # The PathPrefix rule accurately captures the 'Prefix' pathType from the original Ingress
+    # for the specific API endpoints.
+    - match: Host(`direct.ha.vpineda.me`) && PathPrefix(`/auth/token`)
+      kind: Rule
+      services:
+        - name: home-assistant
+          port: 8080
+    - match: Host(`direct.ha.vpineda.me`) && PathPrefix(`/auth/authorize`)
+      kind: Rule
+      services:
+        - name: home-assistant
+          port: 8080
+    - match: Host(`direct.ha.vpineda.me`) && PathPrefix(`/api/google_assistant`)
+      kind: Rule
+      services:
+        - name: home-assistant
+          port: 8080

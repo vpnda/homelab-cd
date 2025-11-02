@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: host-forward-check
+  namespace: pihole
+spec:
+  selector:
+    matchLabels:
+      app: host-forward-check
+  template:
+    metadata:
+      labels:
+        app: host-forward-check
+    spec:
+      hostNetwork: true
+      hostPID: true
+      restartPolicy: Always
+      containers:
+      - name: host-forward
+        image: alpine:latest
+        securityContext:
+          privileged: true
+        command:
+          - /bin/sh
+          - -c
+          - |
+            apk add --no-cache iptables
+            while true; do
+              # Ensure iptables rules exist
+              iptables -C FORWARD -s 192.168.1.0/24 -d 10.43.0.0/16 -j ACCEPT 2>/dev/null || \
+                iptables -A FORWARD -s 192.168.1.0/24 -d 10.43.0.0/16 -j ACCEPT
+
+              iptables -C FORWARD -d 192.168.1.0/24 -s 10.43.0.0/16 -j ACCEPT 2>/dev/null || \
+                iptables -A FORWARD -d 192.168.1.0/24 -s 10.43.0.0/16 -j ACCEPT
+
+              iptables -t nat -C POSTROUTING -s 192.168.1.0/24 -d 10.43.0.0/16 -j MASQUERADE 2>/dev/null || \
+                iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -d 10.43.0.0/16 -j MASQUERADE
+
+              # Ensure route to 10.43.0.0/16 via cni0 exists
+              sleep 300
+            done
