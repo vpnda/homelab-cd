@@ -16,6 +16,8 @@ spec:
       labels:
         app: esphome
     spec:
+      nodeSelector:
+        longhorn: "true"
       containers:
       - name: esphome
         image: esphome/esphome:2026.6.5 # Use the official ESPHome Docker image
