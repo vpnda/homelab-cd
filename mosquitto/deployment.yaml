@@ -16,6 +16,8 @@ spec:
       labels:
         app: mosquitto
     spec:
+      nodeSelector:
+        longhorn: "true"
       containers:
       - name: mosquitto
         image: eclipse-mosquitto:2.0
