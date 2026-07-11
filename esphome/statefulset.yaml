@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: esphome
-        image: esphome/esphome:latest # Use the official ESPHome Docker image
+        image: esphome/esphome:2026.6.5 # Use the official ESPHome Docker image
         ports:
         - containerPort: 6052 # Default ESPHome dashboard port
         volumeMounts:
