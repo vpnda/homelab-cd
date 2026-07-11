@@ -20,7 +20,7 @@ spec:
         longhorn: "true"
       containers:
       - name: mosquitto
-        image: eclipse-mosquitto:2.0
+        image: eclipse-mosquitto:2.1-alpine
         ports:
         # Standard MQTT port
         - containerPort: 1883
