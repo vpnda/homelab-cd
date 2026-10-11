@@ -12,6 +12,8 @@ spec:
       labels:
         app: maintainerr
     spec:
+      nodeSelector:
+        longhorn: "true"
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
